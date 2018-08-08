@@ -1,0 +1,12 @@
+language: go
+
+before_script:
+    - export PATH=$HOME/gopath/bin:$PATH
+
+jobs:
+  include:
+    - stage: Build
+      script:
+        - make install.tools
+        - make verify
+      go: "1.10.x"

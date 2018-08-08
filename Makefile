@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+GO := go
+
 EPOCH_TEST_COMMIT := f98810348b4b26d8c4dd64e36bde613049b2b0b9
 
 default: help
