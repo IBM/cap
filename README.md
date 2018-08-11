@@ -6,7 +6,7 @@ This project is for providing client libraries, and examples, for integration wi
 For example, they will provide code to enable a client application to push, pull, and parse CAP messages with a CAP message provider such as the [US National Weather Service](https://alerts.weather.gov/cap/).
 
 ## Call for Code
-This is a [Call for Code](https://callforcode.org/) (C4C) project for other C4C projects to build on. C4C is a multi-year global initiative asking developers to use their skills and mastery of the latest technologies, to drive positive change across the world through their code.
+This is a [Call for Code](https://callforcode.org/) (CFC) project for other CFC projects to build on. CFC is a multi-year global initiative asking developers to use their skills and mastery of the latest technologies, to drive positive change across the world through their code.
 <p align="center">
 <a href="https://callforcode.org/"><img src="https://callforcode.org/wp-content/uploads/2018/05/Call_for_Code_logo_vector_toptype_color.png" alt="Call for Code" width="120" height="138" border="10"></a>
 </p>
