@@ -3,7 +3,7 @@ The Common Alerting Protocol (CAP) allows emergency messages to be simultaneousl
 
 ## Project Purpose
 This project is for providing client libraries, and examples, for integration with CAP message providers in one or more somewhat popular languages for container hosted services (rust, golang, js, swift, python, php, etc.).
-For example, they will provide code to enable a client application to push, pull, and parse CAP messages with a CAP message provider such as the [US National Weather Service](https://alerts.weather.gov/cap/).
+For example, they will provide code to enable a client application to push, pull, and parse CAP messages with a CAP message provider such as the [US National Weather Service](https://alerts.weather.gov/index.php).
 
 ## Call for Code
 This is a [Call for Code](https://callforcode.org/) (C4C) project for other C4C projects to build on. C4C is a multi-year global initiative asking developers to use their skills and mastery of the latest technologies, to drive positive change across the world through their code.
@@ -22,4 +22,4 @@ To communicate with the team please feel free to open up issues and pull request
 
 ## Licenses
 The cap codebase is released under the [Apache 2.0 license](https://github.com/IBM/cap/LICENSE).
-The README.md file, and files in the "docs" folder are licensed under the [Creative Commons Attribution 4.0 International License](http://creativecommons.org/licenses/by/4.0/).
+The README.md file, and files in the `docs` folder are licensed under the [Creative Commons Attribution 4.0 International License](http://creativecommons.org/licenses/by/4.0/).
