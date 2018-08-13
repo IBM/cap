@@ -5,8 +5,10 @@ before_script:
 
 jobs:
   include:
-    - stage: Build
+    - stage: Build and Test
       script:
         - make install.tools
         - make verify
+        - make binaries
+        - make test
       go: "1.10.x"

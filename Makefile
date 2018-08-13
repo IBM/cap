@@ -13,30 +13,68 @@
 # limitations under the License.
 
 GO := go
-
 EPOCH_TEST_COMMIT := f98810348b4b26d8c4dd64e36bde613049b2b0b9
+PROJECT := github.com/IBM/cap
+BUILD_DIR := _output
+SOURCES := $(shell find go/atom go/cap go/captn go/shared vendor/ -name '*.go')
 
 default: help
 
 help:
 	@echo "Usage: make <target>"
 	@echo
-	@echo " * 'verify'           	- Execute the source code verification tools"
-	@echo " * 'install.tools'    	- Install tools used by verify"
+	@echo " * 'binaries'      - Build binaries"
+	@echo " * 'clean'         - Clean build artifacts"
+	@echo " * 'test'          - Run Unit and Integration Tests"
+	@echo " * 'unit'          - Run Unit Tests"
+	@echo " * 'coverage'      - Determine Unit and Integration Test Coverage, generates profile in coverage.out"
+	@echo " * 'verify'        - Execute the source code verification tools"
+	@echo " * 'install.tools' - Install tools used by verify"
 
-.PHONY: verify
+.PHONY: binaries clean test unit integration coverage
 
-verify: .gitvalidation
+binaries: $(BUILD_DIR)/captn
+
+$(BUILD_DIR)/captn: $(SOURCES)
+	$(GO) build -o $@ \
+		-gcflags '$(GO_GCFLAGS)' \
+		$(PROJECT)/go/captn
+
+clean:
+	rm -rf $(BUILD_DIR)/*
+
+test: ## test the go packages unit and integration
+	$(GO) test ./go/atom ./go/cap ./go/shared -v -tags=integration
+
+unit: ## test the go packages
+		$(GO) test ./go/atom ./go/cap ./go/shared -v
+
+coverage: ## test and determine coverage of the go packages
+	$(GO) test ./go/atom ./go/cap ./go/shared -tags=integration -covermode=count -coverprofile=$(BUILD_DIR)/coverage.out
+
+.PHONY: verify gofmt golint
+
+verify: .gitvalidation gofmt golint
 
 .PHONY: .gitvalidation
 # When this is running in travis, it will only check the travis commit range.
 # When running outside travis, it will check from $(EPOCH_TEST_COMMIT)..HEAD.
 .gitvalidation:
 ifeq ($(TRAVIS),true)
+	@echo "checking for DCO in TRAVIS"
 	git-validation -q -run DCO,short-subject
 else
+	@echo "checking for DCO"
 	git-validation -v -run DCO,short-subject -range $(EPOCH_TEST_COMMIT)..HEAD
 endif
+
+gofmt:
+	@echo "checking gofmt"
+	@./hack/verify-gofmt.sh
+
+golint:
+	@echo "checking golint"
+	@./hack/verify-golint.sh
 
 .PHONY: install.tools .install.gitvalidation .install.gometalinter
 
