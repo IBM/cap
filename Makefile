@@ -16,7 +16,6 @@ GO := go
 EPOCH_TEST_COMMIT := f98810348b4b26d8c4dd64e36bde613049b2b0b9
 PROJECT := github.com/IBM/cap
 BUILD_DIR := _output
-SOURCES := $(shell find go/atom go/cap go/captn go/shared vendor/ -name '*.go')
 
 default: help
 
@@ -31,11 +30,11 @@ help:
 	@echo " * 'verify'        - Execute the source code verification tools"
 	@echo " * 'install.tools' - Install tools used by verify"
 
-.PHONY: binaries clean test unit integration coverage
+.PHONY: binaries clean test unit integration coverage $(BUILD_DIR)/captn
 
 binaries: $(BUILD_DIR)/captn
 
-$(BUILD_DIR)/captn: $(SOURCES)
+$(BUILD_DIR)/captn:
 	$(GO) build -o $@ \
 		-gcflags '$(GO_GCFLAGS)' \
 		$(PROJECT)/go/captn
