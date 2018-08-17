@@ -50,7 +50,7 @@ func TestGetNwsAtomFeedEntryFromLink(t *testing.T) {
 		t.Skip("No alert entries in the Atom feed. Skipping...")
 	}
 	entry := feed.Entries[0]
-	alert, err := entry.Link[0].GetAlert()
+	alert, _, err := entry.Link[0].GetAlert()
 	if err != nil {
 		t.Fatal(err)
 	}

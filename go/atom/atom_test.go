@@ -113,7 +113,7 @@ func TestNWSAtomGeocodeGetValuesReturnsEmptyArrIfNotFound(t *testing.T) {
 
 func TestLinkFollowAlertReturnsErrorForInvalidURL(t *testing.T) {
 	link := Link{Href: "abcdef"}
-	_, err := link.GetAlert()
+	_, _, err := link.GetAlert()
 	assert.Equal(t, "Get abcdef: unsupported protocol scheme \"\"", err.Error())
 }
 
