@@ -20,6 +20,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/IBM/cap/go/atom"
 	"github.com/urfave/cli"
@@ -27,18 +28,51 @@ import (
 
 func main() {
 	app := cli.NewApp()
-	app.Name = "pull"
-	app.Usage = "pull CAP alerts"
-	app.Action = func(c *cli.Context) error {
-		fmt.Println("pulling CAP alerts")
-		_, raw, err := atom.GetFeed()
-		if err != nil {
-			return err
-		}
-		fmt.Println("printing raw feed:")
-		fmt.Printf("%s", raw)
+	app.Name = "captn"
+	app.Usage = "Client to work with National Weather Service ATOM Feed and CAP Alerts"
 
-		return nil
+	app.Commands = []cli.Command{
+		{
+			Name:        "pull",
+			Aliases:     []string{"p"},
+			Usage:       "pull nws atom feed",
+			Description: "Get the national weather service atom feed and dumps it as output",
+			Action: func(c *cli.Context) error {
+				_, raw, err := atom.GetFeed()
+				if err != nil {
+					return err
+				}
+				fmt.Printf("%s", raw)
+				return nil
+			},
+		},
+		{
+			Name:      "alert",
+			Aliases:   []string{"a"},
+			Usage:     "get CAP alerts of a certain type",
+			ArgsUsage: "TYPE",
+			Description: `loads all CAP alert(s) of TYPE and dumps them as output, default TYPE is any/all.
+
+   Examples: captn alert fire
+             captn alert flood`,
+			Action: func(c *cli.Context) error {
+				alertType := strings.ToLower(c.Args().Get(0))
+				feed, _, err := atom.GetFeed()
+				if err != nil {
+					return err
+				}
+				for _, entry := range feed.Entries {
+					if strings.Contains(strings.ToLower(entry.Event), alertType) {
+						_, raw, err := entry.Link[0].GetAlert()
+						if err != nil {
+							return err
+						}
+						fmt.Printf("%s", raw)
+					}
+				}
+				return nil
+			},
+		},
 	}
 
 	err := app.Run(os.Args)

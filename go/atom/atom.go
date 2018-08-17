@@ -259,18 +259,18 @@ func (e *Entry) GetParameter(name string) string {
 }
 
 // GetAlert retrieves an Alert from a link's href attribute
-func (l *Link) GetAlert() (*cap.Alert11, error) {
+func (l *Link) GetAlert() (*cap.Alert11, []byte, error) {
 	body, err := handleHTTPResponse(http.Get(l.Href))
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	var alert cap.Alert11
 	err = xml.Unmarshal(body, &alert)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
-	return &alert, nil
+	return &alert, body, nil
 }
 
 // GetFeed retrieves the main National Weather Service CAP v1.1 ATOM feed
