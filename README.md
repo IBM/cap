@@ -22,4 +22,4 @@ To communicate with the team please feel free to open up issues and pull request
 
 ## Licenses
 The cap codebase is released under the [Apache 2.0 license](https://github.com/IBM/cap/LICENSE).
-The README.md file, and files in the "docs" folder are licensed under the [Creative Commons Attribution 4.0 International License](http://creativecommons.org/licenses/by/4.0/).
+The `README.md` file, and files in the `docs` folder are licensed under the [Creative Commons Attribution 4.0 International License](https://creativecommons.org/licenses/by/4.0/).
