@@ -1,0 +1,8 @@
+[package]
+name = "cap-rs"
+version = "0.1.0"
+authors = ["Morgan Bauer <mbauer@us.ibm.com>"]
+
+[dependencies]
+reqwest = "0.8"
+atom_syndication = "0.6"
