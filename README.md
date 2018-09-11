@@ -26,6 +26,9 @@ If you'd like to contribute code or docs please read the [contributing guide](./
 ## Communication
 To communicate with the team please feel free to open up issues and pull requests on this github repo.
 
+## Resources
+A number of resources that were used in the building of this project are provided in the [resources](./resources/) folder.
+
 ## Licenses
 The cap codebase is released under the [Apache 2.0 license](https://github.com/IBM/cap/LICENSE).
 The [README.md](./README.md) file, and files in the [docs](./docs/) folder are licensed under the [Creative Commons Attribution 4.0 International License](https://creativecommons.org/licenses/by/4.0/).
