@@ -1,6 +1,17 @@
 # Contributing to IBM/cap
 
+## Getting Started
+
+- Install [Go](https://golang.org/dl/) 
+  - Be sure $GOPATH is added to $PATH.
+- Clone the git repository
+  - `$ git clone https://github.com/IBM/cap.git`
+- Run `make install.tools`
+- Run `make verify && make test` and ensure all tests are successful
+
 ## DCO Signing
+
+
 Each commit in a pull requests must be signed with a valid DCO.
 
 First configure git for dco signing:
