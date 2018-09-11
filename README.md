@@ -1,6 +1,6 @@
 # cap
 
-[![Build Status](https://travis-ci.org/IBM/cap.svg?branch=master)](https://travis-ci.org/IBM/cap)
+[![Build Status](https://travis-ci.com/IBM/cap.svg?branch=master)](https://travis-ci.com/IBM/cap)
 
 The Common Alerting Protocol (CAP) allows emergency messages to be simultaneously disseminated over a wide variety of existing and emerging public alerting systems.
 
