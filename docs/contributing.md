@@ -10,8 +10,6 @@
 - Run `make verify && make test` and ensure all tests are successful
 
 ## DCO Signing
-
-
 Each commit in a pull requests must be signed with a valid DCO.
 
 First configure git for dco signing:
