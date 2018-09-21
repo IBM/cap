@@ -275,7 +275,12 @@ func (l *Link) GetAlert() (*cap.Alert11, []byte, error) {
 
 // GetFeed retrieves the main National Weather Service CAP v1.1 ATOM feed
 func GetFeed() (*Feed, []byte, error) {
-	body, err := handleHTTPResponse(http.Get(NwsNationalAtomFeedURL))
+	return GetFeedFrom(NwsNationalAtomFeedURL)
+}
+
+// GetFeedFrom retrieves a CAP v1.1 ATOM feed from requested host
+func GetFeedFrom(host string) (*Feed, []byte, error) {
+	body, err := handleHTTPResponse(http.Get(host))
 	if err != nil {
 		return nil, nil, err
 	}

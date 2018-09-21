@@ -13,9 +13,20 @@
 # limitations under the License.
 
 GO := go
+
 EPOCH_TEST_COMMIT := f98810348b4b26d8c4dd64e36bde613049b2b0b9
+
 PROJECT := github.com/IBM/cap
+
+GOPROJECT_PACKAGES := ./go/atom ./go/cap ./go/shared ./go/version ./go/log ./go/caperrors ./go/capship
+
 BUILD_DIR := _output
+
+VERSION=$(shell git describe --match 'v[0-9]*' --dirty='.m' --always)
+
+REVISION=$(shell git rev-parse HEAD)$(shell if ! git diff --no-ext-diff --quiet --exit-code; then echo .m; fi)
+
+GO_LDFLAGS=-ldflags '-X $(PROJECT)/go/version.Version=$(VERSION) -X $(PROJECT)/go/version.Revision=$(REVISION)'
 
 default: help
 
@@ -30,26 +41,28 @@ help:
 	@echo " * 'verify'        - Execute the source code verification tools"
 	@echo " * 'install.tools' - Install tools used by verify"
 
-.PHONY: binaries clean test unit integration coverage $(BUILD_DIR)/captn
+.PHONY: binaries clean test unit integration coverage $(BUILD_DIR)/captn $(BUILD_DIR)/capship
 
-binaries: $(BUILD_DIR)/captn
+binaries: $(BUILD_DIR)/captn $(BUILD_DIR)/capship
 
 $(BUILD_DIR)/captn:
-	$(GO) build -o $@ \
-		-gcflags '$(GO_GCFLAGS)' \
-		$(PROJECT)/go/captn
+	$(GO) build -o $@ -gcflags '$(GO_GCFLAGS)' $(GO_LDFLAGS) $(PROJECT)/go/captn
+
+$(BUILD_DIR)/capship:
+	$(GO) build -o $@ -gcflags '$(GO_GCFLAGS)' $(GO_LDFLAGS) $(PROJECT)/go/capship
 
 clean:
 	rm -rf $(BUILD_DIR)/*
 
 test: ## test the go packages unit and integration
-	$(GO) test ./go/atom ./go/cap ./go/shared -v -tags=integration
+	$(GO) test $(GOPROJECT_PACKAGES) -v -tags=integration
 
 unit: ## test the go packages
-		$(GO) test ./go/atom ./go/cap ./go/shared -v
+	$(GO) test $(GOPROJECT_PACKAGES) -v
 
 coverage: ## test and determine coverage of the go packages
-	$(GO) test ./go/atom ./go/cap ./go/shared -tags=integration -covermode=count -coverprofile=$(BUILD_DIR)/coverage.out
+	$(GO) test $(GOPROJECT_PACKAGES) -tags=integration \
+		-covermode=count -coverprofile=$(BUILD_DIR)/coverage.out
 
 .PHONY: verify gofmt golint
 
