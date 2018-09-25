@@ -33,6 +33,7 @@ import (
 const (
 	alertsDirectory = "alerts/"
 	feedsDirectory  = "feeds/"
+	usFeed          = "cap.us"
 )
 
 // Server - capship host
@@ -60,6 +61,12 @@ func New(ctx context.Context, config *Config) (*Server, error) {
 			context: ctx,
 		}
 	)
+	// set the log level for the server context
+	lvl, err := log.ParseLevel(config.LogLevel)
+	if err != nil {
+		return nil, err
+	}
+	log.G(s.context).Level = lvl
 	return s, nil
 }
 
@@ -126,6 +133,19 @@ func (s *Server) uploadHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	log.G(s.context).Infof(fmt.Sprintf("File uploaded to: %s Bytes written: %d", path, written))
+
+	// TODO: move feed generation to background processor; add other feed types; optimize;...
+	// for now, generates a new global feed on each alert upload
+	feed, err := s.feedGenerater(s.config.Root + alertsDirectory)
+	if err != nil {
+		log.G(s.context).Errorf(fmt.Sprintf("Feed could not be generated: %s", err))
+		return
+	}
+	_, err = s.feedWriter(feed)
+	if err != nil {
+		log.G(s.context).Errorf(fmt.Sprintf("Feed could not be writen: %s", err))
+		return
+	}
 }
 
 func (s *Server) writeError(w http.ResponseWriter, message string, statusCode int) {

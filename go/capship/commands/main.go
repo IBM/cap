@@ -36,6 +36,9 @@ _/ ___\ \__  \  \____ \  /  ___/|  |  \ |  |\____ \
      \/      \/ |__|         \/      \/     |__|
 
 a server for CAP Alerts and Atomfeeds with CAP Alert Summaries
+
+Note: If found, config.toml settings override the default settings.
+Command line flags override both config.toml and default settings.
 `
 
 // App returns a *cli.App instance.
@@ -44,6 +47,11 @@ func App() *cli.App {
 	app.Name = "capship"
 	app.Version = version.Version
 	app.Usage = usage
+	// Note: if a flag is set it overrides the config.toml
+	// thus if a default value is added to a flag, that default overrides the
+	// config.toml so we don't default values for flags that have toml config
+	// because we can't tell the difference between default flag and actual flag
+	// TODO convert toml config code to github.com/urfave/cli/altsrc code pattern
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
 			Name:  "config,c",
@@ -53,15 +61,22 @@ func App() *cli.App {
 		cli.StringFlag{
 			Name:  "root",
 			Usage: "capship root directory",
+			//Value: DefaultRootDir,
 		},
-		cli.Int64Flag{
+		cli.StringFlag{
 			Name:  "max-upload-size,m",
-			Usage: "int64",
-			Value: DefaultMaxUploadSize,
+			Usage: "maximum file size for uploads",
+			//Value: DefaultMaxUploadSize,
 		},
 		cli.StringFlag{
 			Name:  "log-level,l",
 			Usage: "logging level [trace, debug, info, warn, error, fatal, panic]",
+			//Value: DefaultLogLevel,
+		},
+		cli.StringFlag{
+			Name:  "server-host-name,s",
+			Usage: "capship host name",
+			//Value: DefaultHostName,
 		},
 	}
 	app.Commands = []cli.Command{
@@ -81,7 +96,8 @@ func App() *cli.App {
 		if err := LoadConfig(c.GlobalString("config"), config); err != nil && !os.IsNotExist(err) {
 			return err
 		}
-		// apply flags to the config
+
+		// apply config flags to the client config, does not override command line arguments
 		if err := applyFlags(c, config); err != nil {
 			return err
 		}
@@ -102,11 +118,11 @@ func App() *cli.App {
 		serverCH <- server
 		go server.serve()
 
-		log.G(bctx).Infof("capship ready:")
+		log.G(bctx).Infof("capship ready serving on: " + server.config.HostName)
 		log.G(bctx).Infof("   use '/cap/' to pull the cap alert feed")
 		log.G(bctx).Infof("   use '/cap/{reference}' to pull a cap alert file")
 		log.G(bctx).Infof("   use '/upload' to upload unique alert files using curl etc. Example:")
-		log.G(bctx).Infof("      $ curl -F 'uploadFile=@KAR0-0306112239-SW.xml' http://localhost:8080/upload")
+		log.G(bctx).Infof("      $ curl -F 'uploadFile=@KAR0-0306112239-SW.xml' " + server.config.HostName + "upload")
 		log.G(bctx).Infof("   use '/feeds/{fileName}' to download feed files")
 		log.G(bctx).Infof("   use '/alerts/{fileName}' to download alert files")
 

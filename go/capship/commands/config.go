@@ -37,15 +37,19 @@ const (
 	DefaultLogLevel = "info"
 	// DefaultMaxUploadSize - for all uploads
 	DefaultMaxUploadSize = 2 * 1048576 // 2mb
+	// DefaultHostName -
+	DefaultHostName = "http://localhost:8080/"
 )
 
 // Config provides capship configuration data
 type Config struct {
 	// Root is the path to a directory where capship will store persistent data
 	Root     string `toml:"root"`
-	LogLevel string `toml:"log_level"`
+	LogLevel string `toml:"log-level"`
 	// MaxUploadSize is the maximum file size permitted for uploads
-	MaxUploadSize int64 `toml:"max_upload_size"`
+	MaxUploadSize int64 `toml:"max-upload_size"`
+	// HostName is the public host name for the server
+	HostName string `toml:"host-name"`
 
 	md toml.MetaData
 }
@@ -89,11 +93,16 @@ func defaultConfig() *Config {
 		Root:          DefaultRootDir,
 		LogLevel:      DefaultLogLevel,
 		MaxUploadSize: DefaultMaxUploadSize,
+		HostName:      DefaultHostName,
 	}
 }
 
 func applyFlags(c *cli.Context, config *Config) error {
 	// flags override config values
+	logLvl := c.GlobalString("log-level")
+	if logLvl != "" {
+		config.LogLevel = logLvl
+	}
 	if err := setLevel(c, config); err != nil {
 		return err
 	}
@@ -101,24 +110,22 @@ func applyFlags(c *cli.Context, config *Config) error {
 	if root != "" {
 		config.Root = root
 	}
-	uls := c.GlobalInt64("max_upload_size")
+	uls := c.GlobalInt64("max-upload-size")
 	if uls != 0 {
 		config.MaxUploadSize = uls
+	}
+	host := c.GlobalString("server-host-name")
+	if host != "" {
+		config.HostName = host
 	}
 	return nil
 }
 
 func setLevel(context *cli.Context, config *Config) error {
-	l := context.GlobalString("log-level")
-	if l == "" {
-		l = config.LogLevel
+	lvl, err := log.ParseLevel(config.LogLevel)
+	if err != nil {
+		return err
 	}
-	if l != "" {
-		lvl, err := log.ParseLevel(l)
-		if err != nil {
-			return err
-		}
-		logrus.SetLevel(lvl)
-	}
+	logrus.SetLevel(lvl)
 	return nil
 }

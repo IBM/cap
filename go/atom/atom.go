@@ -102,7 +102,7 @@ type Link struct {
 	Rel      string `xml:"rel,attr,omitempty"`
 	Type     string `xml:"type,attr,omitempty"`     // indicates the media type of the resource
 	HrefLang string `xml:"hreflang,attr,omitempty"` // indicates the language of the referenced resource
-	Title    Text   `xml:"title,attr,omitempty"`    // human readable information about the link, typically for display purposes
+	Title    string `xml:"title,attr,omitempty"`    // human readable information about the link, typically for display purposes
 	Length   string `xml:"length,attr,omitempty"`   // the length of the resource, in bytes
 }
 
