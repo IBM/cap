@@ -102,7 +102,7 @@ type Link struct {
 	Rel      string `xml:"rel,attr,omitempty"`
 	Type     string `xml:"type,attr,omitempty"`     // indicates the media type of the resource
 	HrefLang string `xml:"hreflang,attr,omitempty"` // indicates the language of the referenced resource
-	Title    Text   `xml:"title,attr,omitempty"`    // human readable information about the link, typically for display purposes
+	Title    string `xml:"title,attr,omitempty"`    // human readable information about the link, typically for display purposes
 	Length   string `xml:"length,attr,omitempty"`   // the length of the resource, in bytes
 }
 
@@ -275,7 +275,12 @@ func (l *Link) GetAlert() (*cap.Alert11, []byte, error) {
 
 // GetFeed retrieves the main National Weather Service CAP v1.1 ATOM feed
 func GetFeed() (*Feed, []byte, error) {
-	body, err := handleHTTPResponse(http.Get(NwsNationalAtomFeedURL))
+	return GetFeedFrom(NwsNationalAtomFeedURL)
+}
+
+// GetFeedFrom retrieves a CAP v1.1 ATOM feed from requested host
+func GetFeedFrom(host string) (*Feed, []byte, error) {
+	body, err := handleHTTPResponse(http.Get(host))
 	if err != nil {
 		return nil, nil, err
 	}

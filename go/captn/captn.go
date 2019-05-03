@@ -26,11 +26,22 @@ import (
 	"github.com/urfave/cli"
 )
 
+const (
+	// DefaultAtomFeed - location used by captn to get and push atom data
+	DefaultAtomFeed = atom.NwsNationalAtomFeedURL
+)
+
 func main() {
 	app := cli.NewApp()
 	app.Name = "captn"
 	app.Usage = "Client to work with National Weather Service ATOM Feed and CAP Alerts"
-
+	app.Flags = []cli.Flag{
+		cli.StringFlag{
+			Name:  "atom-feed,a",
+			Usage: "url to atom feed host url",
+			Value: DefaultAtomFeed,
+		},
+	}
 	app.Commands = []cli.Command{
 		{
 			Name:        "pull",
@@ -38,7 +49,7 @@ func main() {
 			Usage:       "pull nws atom feed",
 			Description: "Get the national weather service atom feed and dumps it as output",
 			Action: func(c *cli.Context) error {
-				_, raw, err := atom.GetFeed()
+				_, raw, err := atom.GetFeedFrom(c.GlobalString("atom-feed"))
 				if err != nil {
 					return err
 				}
@@ -57,7 +68,7 @@ func main() {
              captn alert flood`,
 			Action: func(c *cli.Context) error {
 				alertType := strings.ToLower(c.Args().Get(0))
-				feed, _, err := atom.GetFeed()
+				feed, _, err := atom.GetFeedFrom(c.GlobalString("atom-feed"))
 				if err != nil {
 					return err
 				}

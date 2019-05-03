@@ -44,3 +44,17 @@ $ make verify
 
 $ make install.tools
 - Install tools used by verify"
+
+## Debug Hints
+To send a stackdump request via signal to the capship server:
+```
+$ sudo kill -SIGUSR1 `pidof capship`
+or
+$ sudo pkill -SIGUSR1 capship
+```
+To send a terminate signal to the capship server:
+```
+$ sudo kill -SIGTERM `pidof capship`
+or
+$ sudo pkill capship
+```
